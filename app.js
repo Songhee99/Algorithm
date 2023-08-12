@@ -1,19 +1,22 @@
-const fs = require("fs");
-const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
-let input = fs.readFileSync(filePath).toString().trim().split("\n");
+var str = "red is impressive.";
 
-let sum = input.reduce((acc, cur) => +acc + +cur);
-let fakeDwarf = sum - 100;
-
-for (i = 0; i < 9; i++) {
-  let remainder = fakeDwarf - +input[i];
-  for (j = 1; i + j < 9; j++) {
-    console.log("i = " + input[i] + " / i+j = " + input[i + j]);
-    if (remainder == +input[i + j]) {
-      input.splice(i, 1);
-      input.splice(i + j - 1, 1);
-    }
-  }
+if (str.match("re") == "re") {
+  console.log("Okay");
 }
 
-// console.log(input.sort((a, b) => a - b).join("\n"));
+// let arr = [1, 2, 2, 3, 3, 3];
+
+// let object = arr.reduce((acc, cur) => {
+//   acc[cur] = (acc[cur] || 0) + 1;
+//   console.log(acc);
+//   return acc;
+// }, {});
+
+// console.log(object); //{ '1': 1, '2': 2, '3': 3 }
+
+// let sum = arr.reduce((acc, cur) => {
+//   console.log(acc);
+//   return acc + cur;
+// }, 10);
+
+// console.log(sum);
