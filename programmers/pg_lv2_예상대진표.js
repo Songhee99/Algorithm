@@ -1,18 +1,9 @@
 function solution(n, a, b) {
-  let count = 1;
+  let count = 0;
 
-  while (b - a != 1) {
-    if (a % 2 == 0) {
-      a = a / 2;
-    } else {
-      a = (a + 1) / 2;
-    }
-
-    if (b % 2 == 0) {
-      b = b / 2;
-    } else {
-      b = (b + 1) / 2;
-    }
+  while (a != b) {
+    a = Math.ceil(a / 2);
+    b = Math.ceil(b / 2);
 
     count++;
   }
