@@ -1,22 +1,14 @@
-var str = "red is impressive.";
+const fs = require("fs");
+const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
+let input = fs.readFileSync(filePath).toString().trim().split("\n");
+let result = "";
 
-if (str.match("re") == "re") {
-  console.log("Okay");
+for (i = 1; i <= input[0]; i++) {
+  let testCase = input[i].split(" ");
+  testCase[1].split("").forEach((ele) => {
+    result += ele.repeat(testCase[0]);
+  });
+  result += "\n";
 }
 
-// let arr = [1, 2, 2, 3, 3, 3];
-
-// let object = arr.reduce((acc, cur) => {
-//   acc[cur] = (acc[cur] || 0) + 1;
-//   console.log(acc);
-//   return acc;
-// }, {});
-
-// console.log(object); //{ '1': 1, '2': 2, '3': 3 }
-
-// let sum = arr.reduce((acc, cur) => {
-//   console.log(acc);
-//   return acc + cur;
-// }, 10);
-
-// console.log(sum);
+console.log(result.trim());
