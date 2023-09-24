@@ -1,16 +1,14 @@
 function solution(s) {
-  let count = 0;
+  let tempS = [];
+  let sArr = s.split("");
 
-  s.split("").forEach((ele) => {
-    if (ele == "(") {
-      count++;
+  for (const item of sArr) {
+    if (item == "(") {
+      tempS.push(item);
     } else {
-      count--;
+      if (!tempS.pop()) return false;
     }
-    if (count < 0) return (count = "break");
-    if (count == "break") return;
-  });
-
-  if (count == 0) return true;
-  return false;
+  }
+  if (tempS.length != 0) return false;
+  return true;
 }
