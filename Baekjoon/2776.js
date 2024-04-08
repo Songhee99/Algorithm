@@ -1,41 +1,22 @@
 const fs = require("fs");
 const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
 let [t, ...cases] = fs.readFileSync(filePath).toString().trim().split("\n");
-let finalResult = [];
-let count = 0;
+let result = "";
+let idx = 0;
 
 while (t > 0) {
-  let tmpResult = [];
-  let note1Count = cases[0 + count];
-  let note1 = cases[1 + count]
-    .split(" ")
-    .sort((a, b) => a - b)
-    .map((v) => +v);
-  let note2Count = cases[2 + count];
-  let note2 = cases[3 + count]
-    .split(" ")
-    .map((v, idx) => [+v, idx])
-    .sort((a, b) => a[0] - b[0]);
+  let n = cases[0 + idx];
+  let note1 = new Set(cases[1 + idx].split(" "));
+  let m = cases[2 + idx];
+  let note2 = cases[3 + idx].split(" ");
 
-  let curIdx = 0;
-  note2.forEach(([v, idx]) => {
-    while (note1[curIdx] <= v) {
-      if (note1[curIdx] == v) {
-        tmpResult.push([1, idx]);
-        return;
-      } else curIdx++;
-    }
-    tmpResult.push([0, idx]);
+  note2.forEach((ele) => {
+    if (note1.has(ele)) result += "1\n";
+    else result += "0\n";
   });
 
-  tmpResult
-    .sort((a, b) => a[1] - b[1])
-    .forEach((ele) => {
-      finalResult.push(ele[0]);
-    });
-
-  count += 4;
+  idx += 4;
   t--;
 }
 
-console.log(finalResult.join("\n"));
+console.log(result.trim());
