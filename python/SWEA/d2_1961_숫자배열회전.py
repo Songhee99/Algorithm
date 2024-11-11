@@ -1,37 +1,33 @@
 T = int(input())
+result = []
 
-for t in range(1, T + 1):
+for t in range(T):
     n = int(input())
-    totalGraph = [[] for i in range(n)]
     graph = []
-    for i in range(n):
-        graph.append(list(input().split()))
+    for _ in range(n):
+        nums = list(map(int, input().split()))
+        graph.append(nums)
 
-    def turn_90(graph):
-        for j in range(n):
-            tmpStr = ""
-            for k in range(n - 1, -1, -1):
-                tmpStr += graph[k][j]
-            totalGraph[j].append(tmpStr)
+    def turns():
+        lines = []
+        for i in range(n):
+            lines.append([])
+            tmpStr90 = ""
+            tmpStr180 = ""
+            tmpStr270 = ""
+            for j in range(n):
+                tmpStr90 += str(graph[(n - 1) - j][i])
+                tmpStr180 += str(graph[(n - 1) - i][(n - 1) - j])
+                tmpStr270 += str(graph[j][(n - 1) - i])
+            lines[i].append(tmpStr90)
+            lines[i].append(tmpStr180)
+            lines[i].append(tmpStr270)
+        return lines
 
-    def turn_180(graph):
-        for j in range(n - 1, -1, -1):
-            tmpStr = ""
-            for k in range(n - 1, -1, -1):
-                tmpStr += graph[j][k]
-            totalGraph[n - 1 - j].append(tmpStr)
+    turnsList = turns()
 
-    def turn_270(graph):
-        for j in range(n - 1, -1, -1):
-            tmpStr = ""
-            for k in range(n):
-                tmpStr += graph[k][j]
-            totalGraph[n - 1 - j].append(tmpStr)
+    result.append(f"#{t + 1}")
+    for k in range(n):
+        result.append(" ".join(turnsList[k]))
 
-    turn_90(graph)
-    turn_180(graph)
-    turn_270(graph)
-
-    print(f"#{t}")
-    for i in range(n):
-        print(" ".join(totalGraph[i]))
+print("\n".join(result))
