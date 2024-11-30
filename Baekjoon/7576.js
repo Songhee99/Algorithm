@@ -2,30 +2,28 @@ const fs = require("fs");
 const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
 const [mn, ...input] = fs.readFileSync(filePath).toString().trim().split("\n");
 const [m, n] = mn.split(" ").map(Number);
-const graph = [];
-graph.push(new Array(m + 2).fill(-1));
-input.forEach((ele) => {
-  const tomatoes = [-1, ...ele.split(" ").map(Number), -1];
-  graph.push(tomatoes);
-});
-graph.push(new Array(m + 2).fill(-1));
+let result = 0;
 
 const dy = [-1, 1, 0, 0];
 const dx = [0, 0, -1, 1];
 const queue = [];
 let head = 0;
 
-for (i = 1; i <= n; i++) {
-  for (j = 1; j <= m; j++) {
-    if (graph[i][j] == 1) queue.push([i, j]);
-  }
-}
+const graph = [new Array(m + 2).fill(-1)];
+input.forEach((ele, row) => {
+  const nums = ele.split(" ").map(Number);
+  nums.forEach((ele2, col) => {
+    if (ele2 == 1) queue.push([row + 1, col + 1]);
+  });
+  graph.push([-1, ...nums, -1]);
+});
+graph.push(new Array(m + 2).fill(-1));
 
 const bfs = () => {
   while (queue.length > head) {
     const [y, x] = queue[head++];
 
-    for (d = 0; d < 4; d++) {
+    for (let d = 0; d < 4; d++) {
       const ny = y + dy[d];
       const nx = x + dx[d];
 
@@ -39,13 +37,11 @@ const bfs = () => {
 
 bfs();
 
-let days = 0;
-for (let i = 1; i <= n; i++) {
-  for (let j = 1; j <= m; j++) {
-    if (graph[i][j] == 0) return console.log(-1);
-
-    days = Math.max(days, graph[i][j]);
+for (row of graph) {
+  for (col of row) {
+    if (col == 0) return console.log(-1);
+    result = Math.max(result, col);
   }
 }
 
-console.log(days - 1);
+return console.log(result - 1);
