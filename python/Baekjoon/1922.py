@@ -1,32 +1,27 @@
 import sys
+import heapq
 
 n = int(sys.stdin.readline().strip())
 m = int(sys.stdin.readline().strip())
-edges = [list(map(int, sys.stdin.readline().strip().split())) for _ in range(m)]
-edges.sort(key = lambda x: x[2])
+graph = [[] for _ in range(n)]
+for _ in range(m):
+    a, b, cost = map(int, sys.stdin.readline().strip().split())
+    graph[a - 1].append((cost, b - 1))
+    graph[b - 1].append((cost, a - 1))
 
-parent = list(range(n + 1))
-rank = [0] * (n + 1)
-
-def find(x):
-    if x != parent[x]: parent[x] = find(parent[x])
-    return parent[x]
-
-def union(rootA, rootB):
-    if rank[rootA] > rank[rootB]: parent[rootB] = rootA
-    elif rank[rootA] < rank[rootB]: parent[rootA] = rootB
-    else:
-        parent[rootB] = rootA
-        rank[rootA] += 1
-
+pq = [(0, 0)]
+visited = [False] * n
 total = 0
 
-for (a, b, cost) in edges:
-    rootA = find(a)
-    rootB = find(b)
+while pq:
+    cost, node = heapq.heappop(pq)
+    if visited[node]: continue
 
-    if rootA != rootB:
-        union(rootA, rootB)
-        total += cost
+    visited[node] = True
+    total += cost
+
+    for (nCost, nNode) in graph[node]:
+        if not visited[nNode]:
+            heapq.heappush(pq, (nCost, nNode))
 
 print(total)
