@@ -3,45 +3,32 @@ from collections import deque
 T = int(input())
 result = []
 
-rowDirection = []
-colDirection = []
-for col in range(3):
-    rowDirection.append([(col, row) for row in range(3)])
-    colDirection.append([(row, col) for row in range(3)])
-selectedIdx = rowDirection + colDirection
-selectedIdx.append([(0, 0), (1, 1), (2, 2)])
-selectedIdx.append([(0, 2), (1, 1), (2, 0)])
+destination = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
-def changeAlp(graph, idx):
-    nGraph = [row[:] for row in graph]
-    for (y, x) in idx:
-        nGraph[y][x] = "T" if nGraph[y][x] == "H" else "H"
-    return nGraph
+def changeAlp(graph, dest):
+    graphList = list(graph)
+    for d in dest:
+        graphList[d] = "T" if graphList[d] == "H" else "H"
+    return "".join(graphList)
 
-for t in range(T):
-    graph = [input().split() for _ in range(3)]
+
+for _ in range(T):
+    graph = "".join(["".join(input().split()) for _ in range(3)])
     visited = set()
 
     def bfs():
         queue = deque([(graph, 0)])
 
         while queue:
-            curGraph, count = queue.popleft()
-            curSeparation = [alp for row in curGraph for alp in row]
+            nGraph, count = queue.popleft()
+            if all(h == "H" for h in nGraph) or all(t == "T" for t in nGraph): return result.append(str(count))
 
-            if all(alp == "H" for alp in curSeparation) or all(alp == "T" for alp in curSeparation): return str(count)
-
-            curStr = "".join(curSeparation)
-            if curStr in visited: continue
-            visited.add(curStr)
-
-            for idx in selectedIdx:
-                nGraph = changeAlp(curGraph, idx)
-                queue.append((nGraph, count + 1))
-
-        return "-1"
-
-    total = bfs()
-    result.append(total)
+            for d in destination:
+                tmpGraph = changeAlp(nGraph, d)
+                if tmpGraph not in visited:
+                    visited.add(tmpGraph)
+                    queue.append([tmpGraph, count + 1])
+        result.append("-1")
+    bfs()
 
 print("\n".join(result))
