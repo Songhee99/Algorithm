@@ -1,41 +1,33 @@
 const fs = require("fs");
 const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
-const [n, nStr, m, mStr] = fs
-  .readFileSync(filePath)
-  .toString()
-  .trim()
-  .split("\n");
-const cranes = nStr
+const [n, ns, m, ms] = fs.readFileSync(filePath).toString().trim().split("\n");
+const cranes = ns
   .split(" ")
   .map(Number)
-  .sort((a, b) => b - a); // 크레인은 내림차순
-const boxes = mStr
+  .sort((a, b) => b - a);
+const boxes = ms
   .split(" ")
   .map(Number)
-  .sort((a, b) => a - b); // 박스는 오름차순
+  .sort((a, b) => b - a);
 
-if (cranes[0] < boxes[m - 1]) return console.log(-1);
+if (cranes[0] < boxes[0]) return console.log(-1);
 
-let result = 0;
-let stack = [];
+let start = 1;
+let end = m;
 
-while (boxes.length > 0) {
-  for (const crane of cranes) {
-    if (boxes.length == 0) break;
+while (start <= end) {
+  const mid = Math.floor((start + end) / 2);
+  let craneIdx = 0;
+  let boxIdx = 0;
 
-    while (boxes.length > 0) {
-      const curBox = boxes.pop();
-
-      if (crane >= curBox) break;
-      else stack.push(curBox);
-    }
+  while (boxIdx < +m) {
+    if (craneIdx == +n || boxes[boxIdx] > cranes[craneIdx]) break;
+    boxIdx += mid;
+    craneIdx++;
   }
 
-  result += 1;
-  if (stack.length > 0) {
-    boxes.push(...stack.reverse());
-    stack = [];
-  }
+  if (boxIdx >= m) end = mid - 1;
+  else start = mid + 1;
 }
 
-console.log(result);
+console.log(start);
