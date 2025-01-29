@@ -3,46 +3,38 @@ const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
 const [rcn, ...input] = fs.readFileSync(filePath).toString().trim().split("\n");
 const [r, c, n] = rcn.split(" ").map(Number);
 
-const fullBombs = Array.from({ length: r }, () => new Array(c).fill("O"));
-let prevBombs = input.map((v) => v.split(""));
+const full = Array.from({ length: r }, () => new Array(c).fill("O"));
+let initial = input.map((v) => v.split(""));
 
 if (n == 1) return console.log(input.join("\n"));
-else if (n % 2 == 0)
-  return console.log(fullBombs.map((v) => v.join("")).join("\n"));
+else if (n % 2 == 0) return console.log(full.map((v) => v.join("")).join("\n"));
 
 const dy = [-1, 1, 0, 0];
 const dx = [0, 0, -1, 1];
-const queue = [];
-let head = 0;
 
-const bfs = (locations) => {
-  const curBombs = fullBombs.map((v) => v.slice());
-  queue.push(...locations);
+const bfs = (curBombs) => {
+  const final = full.map((v) => v.slice());
 
-  while (queue.length > head) {
-    const [y, x] = queue[head++];
-    curBombs[y][x] = ".";
+  for (let y = 0; y < r; y++) {
+    for (let x = 0; x < c; x++) {
+      if (curBombs[y][x] == "O") {
+        final[y][x] = ".";
 
-    for (let d = 0; d < 4; d++) {
-      const ny = y + dy[d];
-      const nx = x + dx[d];
-      if (ny < 0 || ny >= r || nx < 0 || nx >= c) continue;
-      curBombs[ny][nx] = ".";
+        for (let d = 0; d < 4; d++) {
+          const ny = y + dy[d];
+          const nx = x + dx[d];
+
+          if (ny < 0 || ny >= r || nx < 0 || nx >= c) continue;
+          final[ny][nx] = ".";
+        }
+      }
     }
   }
-  return curBombs;
+  return final;
 };
 
-for (let k = 3; k <= n; k += 2) {
-  // n번까지 반복
-  const locations = [];
+const threeSec = bfs(initial);
+const fiveSec = bfs(threeSec);
 
-  for (let i = 0; i < r; i++) {
-    for (let j = 0; j < c; j++) {
-      if (prevBombs[i][j] == "O") locations.push([i, j]);
-    }
-  }
-  prevBombs = bfs(locations);
-}
-
-console.log(prevBombs.map((v) => v.join("")).join("\n"));
+if (n % 4 == 3) console.log(threeSec.map((v) => v.join("")).join("\n"));
+else console.log(fiveSec.map((v) => v.join("")).join("\n"));
